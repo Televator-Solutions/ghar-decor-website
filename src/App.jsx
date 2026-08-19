@@ -510,43 +510,130 @@ function ReviewsPage() {
 // ==========================================
 // 6. BLOG PAGE COMPONENT
 // ==========================================
-function BlogPage() {
+fufunction BlogPage() {
+  const [selectedBlog, setSelectedBlog] = useState(null);
+
   return (
     <div className="pt-32 pb-24 max-w-7xl mx-auto px-6">
       <div className="text-center max-w-3xl mx-auto mb-16">
         <span className="text-xs uppercase tracking-[0.3em] text-[#52B788] font-bold block mb-2">Knowledge Base</span>
-        <h1 className="text-3xl sm:text-5xl font-bold text-white tracking-tight">Ghar Decor Insights & Guides</h1>
+        <h1 className="text-3xl sm:text-5xl font-bold text-white tracking-tight">Ghar Decor Insights & Blog</h1>
         <p className="text-xs sm:text-sm text-slate-400 mt-3">
-          Helpful articles and expert interior design tips specifically written for Agra homes and office spaces.
+          Welcome to our blog, where we share news and knowledge about both our company Ghar decor and the entire industry. Here you can find a wide range of valuable information that will surely prove useful to you.
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {BLOGS.map((blog) => (
           <div 
             key={blog.id}
-            className="p-8 rounded-2xl bg-[#16221B] border border-white/10 hover:border-[#52B788]/50 transition-all flex flex-col justify-between group"
+            className="p-8 rounded-2xl bg-[#16221B] border border-white/10 hover:border-[#52B788]/50 transition-all flex flex-col justify-between group shadow-lg"
           >
             <div>
               <div className="flex items-center justify-between text-[11px] text-[#52B788] font-bold mb-3">
-                <span>{blog.date}</span>
-                <span className="text-slate-500">{blog.readTime || '5 min read'}</span>
+                <span>Posted on: {blog.date}</span>
+                <span className="text-slate-500">{blog.readTime}</span>
               </div>
-              <h3 className="text-xl text-white font-bold mb-3 group-hover:text-[#52B788] transition-colors leading-snug">
+              <h3 className="text-2xl text-white font-bold mb-3 group-hover:text-[#52B788] transition-colors leading-snug">
                 {blog.title}
               </h3>
-              <p className="text-xs text-slate-400 leading-relaxed">
-                {blog.desc}
+              <p className="text-xs text-slate-400 leading-relaxed mb-6">
+                {blog.shortDesc}
               </p>
             </div>
 
-            <div className="pt-6 mt-6 border-t border-white/10 flex items-center gap-2 text-xs uppercase tracking-widest text-[#52B788] font-bold">
-              <span>Read Article</span>
-              <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+            <div className="pt-6 border-t border-white/10 flex items-center justify-between">
+              <span className="text-[10px] text-slate-500 font-semibold">{blog.time || 'Agra Decor'}</span>
+              <button
+                onClick={() => setSelectedBlog(blog)}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 border border-[#52B788]/40 text-[#52B788] hover:bg-[#52B788] hover:text-[#0E1512] text-xs font-bold uppercase tracking-wider transition-all cursor-pointer"
+              >
+                <span>Read Full Post</span>
+                <ArrowRight className="w-3.5 h-3.5"/>
+              </button>
             </div>
           </div>
         ))}
       </div>
+
+      {selectedBlog && (
+        <div 
+          onClick={() => setSelectedBlog(null)}
+          className="fixed inset-0 z-50 bg-black/95 backdrop-blur-md flex items-center justify-center p-4"
+        >
+          <div 
+            onClick={(e) => e.stopPropagation()}
+            className="relative max-w-3xl w-full max-h-[85vh] overflow-y-auto bg-[#16221B] rounded-3xl border border-white/20 p-6 sm:p-10 shadow-2xl space-y-6 text-slate-300 text-xs sm:text-sm leading-relaxed"
+          >
+            <button 
+              onClick={() => setSelectedBlog(null)}
+              className="absolute top-5 right-5 z-10 p-2.5 rounded-full bg-black/70 text-white hover:bg-[#52B788] hover:text-[#0E1512] transition-colors cursor-pointer"
+            >
+              <X className="w-5 h-5"/>
+            </button>
+
+            <div>
+              <span className="text-[11px] font-bold text-[#52B788] uppercase tracking-widest block mb-2">
+                Posted on: {selectedBlog.date}, {selectedBlog.time}
+              </span>
+              <h2 className="text-2xl sm:text-3xl font-bold text-white leading-tight">
+                {selectedBlog.title}
+              </h2>
+            </div>
+
+            <div className="w-full h-px bg-white/10" />
+
+            <p className="text-slate-200">{selectedBlog.fullContent.intro}</p>
+
+            {selectedBlog.fullContent.description && (
+              <p className="text-slate-300">{selectedBlog.fullContent.description}</p>
+            )}
+
+            {selectedBlog.fullContent.serviceOfferings && (
+              <div className="space-y-3 pt-2">
+                <strong className="text-white block text-sm">Our Interior Designing Services in Agra:</strong>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-slate-300">
+                  {selectedBlog.fullContent.serviceOfferings.map((s, i) => (
+                    <div key={i} className="p-2.5 rounded-lg bg-white/5 border border-white/5 flex items-center gap-2">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#52B788]" />
+                      <span>{s}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {selectedBlog.fullContent.servicesList && (
+              <div className="p-5 rounded-2xl bg-[#0E1512] border border-white/10 space-y-3">
+                <strong className="text-white block text-sm mb-2">All 11 Services Provided:</strong>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-slate-200 font-medium">
+                  {selectedBlog.fullContent.servicesList.map((srv, i) => (
+                    <div key={i} className="flex items-center gap-2 text-xs">
+                      <span className="text-[#52B788] font-bold">✓</span>
+                      <span>{srv}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <p className="text-slate-400 italic pt-2">{selectedBlog.fullContent.conclusion}</p>
+
+            <div className="pt-4 border-t border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div>
+                <span className="text-[10px] text-slate-500 uppercase font-bold block">Call us!</span>
+                <span className="text-sm font-bold text-white">{BRAND.phone}</span>
+              </div>
+              <a 
+                href={`tel:${BRAND.phoneRaw}`}
+                className="px-6 py-3 rounded-xl bg-[#52B788] text-[#0E1512] text-xs font-bold uppercase tracking-wider text-center hover:bg-white transition-all shadow-lg"
+              >
+                Call: {BRAND.phone}
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
